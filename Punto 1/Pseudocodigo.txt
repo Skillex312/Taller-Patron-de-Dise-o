@@ -1,0 +1,67 @@
+// Interfaz para Comparadores
+Clase Comparador:
+    Método abstracto comparar(a, b)
+
+// Comparador Ascendente
+Clase ComparadorAscendente implementa Comparador:
+    Método comparar(a, b):
+        Retornar a > b  // True si a debe ir después de b (orden ascendente)
+
+// Comparador Descendente
+Clase ComparadorDescendente implementa Comparador:
+    Método comparar(a, b):
+        Retornar a < b  // True si a debe ir después de b (orden descendente)
+
+// Interfaz para Estrategias de Ordenamiento
+Clase EstrategiaOrdenamiento:
+    Método abstracto ordenar(lista, comparador)
+
+// Implementación de BubbleSort
+Clase BubbleSort implementa EstrategiaOrdenamiento:
+    Método ordenar(lista, comparador):
+        Definir n ← longitud(lista)
+        Para i desde 0 hasta n-1 hacer:
+            Para j desde 0 hasta n-i-2 hacer:
+                Si comparador.comparar(lista[j], lista[j+1]) entonces:
+                    Intercambiar lista[j] ↔ lista[j+1]
+
+// Implementación de QuickSort
+Clase QuickSort implementa EstrategiaOrdenamiento:
+    Método ordenar(lista, comparador):
+        Llamar a quicksort(lista, 0, longitud(lista) - 1, comparador)
+
+    Método quicksort(lista, bajo, alto, comparador):
+        Si bajo < alto entonces:
+            Definir pivote ← particion(lista, bajo, alto, comparador)
+            Llamar a quicksort(lista, bajo, pivote-1, comparador)
+            Llamar a quicksort(lista, pivote+1, alto, comparador)
+
+    Método particion(lista, bajo, alto, comparador):
+        Definir pivote ← lista[alto]
+        Definir i ← bajo - 1
+        Para j desde bajo hasta alto-1 hacer:
+            Si comparador.comparar(pivote, lista[j]) entonces:
+                Incrementar i
+                Intercambiar lista[i] ↔ lista[j]
+        Intercambiar lista[i+1] ↔ lista[alto]
+        Retornar i+1
+
+// Implementación de InsertSort
+Clase InsertSort implementa EstrategiaOrdenamiento:
+    Método ordenar(lista, comparador):
+        Para i desde 1 hasta longitud(lista)-1 hacer:
+            Definir clave ← lista[i]
+            Definir j ← i-1
+            Mientras j ≥ 0 y comparador.comparar(lista[j], clave) hacer:
+                lista[j+1] ← lista[j]
+                j ← j - 1
+            lista[j+1] ← clave
+
+// Ejecución del Programa
+Iniciar:
+    Definir datos ← [3, 1, 4, 1, 5, 9, 2, 6]
+    Definir algoritmo ← nueva InsertSort()  // Puede ser QuickSort, InsertSort o BubbleSort
+    Definir orden ← nuevo ComparadorDescendente()  // Puede ser ComparadorAscendente
+
+    Llamar a algoritmo.ordenar(datos, orden)
+    Imprimir "Resultado:", datos  // Debería imprimir [9, 6, 5, 4, 3, 2, 1, 1]
