@@ -1,0 +1,86 @@
+// Clase base para los manejadores en la cadena
+CLASE ManejadorTransaccion
+    VARIABLE siguienteManejador
+    
+    METODO establecerSiguiente(manejador)
+        siguienteManejador = manejador
+    FIN METODO
+
+    METODO manejar(transaccion)
+        SI siguienteManejador ≠ NULL
+            siguienteManejador.manejar(transaccion)
+        FIN SI
+    FIN METODO
+FIN CLASE
+
+// Manejador para restringir el número de retiros por semana
+CLASE LimiteRetiros HEREDA ManejadorTransaccion
+    METODO manejar(transaccion)
+        SI transaccion.tipo = "RETIRO" Y transaccion.usuario.retirosEstaSemana >= 2
+            MOSTRAR "Error: No puedes hacer más de dos retiros por semana."
+            RETORNAR
+        FIN SI
+        LLAMAR siguienteManejador.manejar(transaccion) SI siguienteManejador ≠ NULL
+    FIN METODO
+FIN CLASE
+
+// Manejador para autorizar retiros grandes
+CLASE AutorizacionRetiros HEREDA ManejadorTransaccion
+    METODO manejar(transaccion)
+        SI transaccion.tipo = "RETIRO" Y transaccion.monto > 10X
+            MOSTRAR "Se requiere autorización para el retiro de " + transaccion.monto
+            SOLICITAR AUTORIZACIÓN
+            SI AUTORIZACIÓN DENEGADA
+                MOSTRAR "Error: Retiro no autorizado."
+                RETORNAR
+            FIN SI
+        FIN SI
+        LLAMAR siguienteManejador.manejar(transaccion) SI siguienteManejador ≠ NULL
+    FIN METODO
+FIN CLASE
+
+// Manejador para reportar depósitos grandes
+CLASE ControlLavadoDinero HEREDA ManejadorTransaccion
+    METODO manejar(transaccion)
+        SI transaccion.tipo = "DEPOSITO" Y transaccion.monto > 5X
+            MOSTRAR "Depósito de " + transaccion.monto + " reportado a control de lavado de dinero."
+        FIN SI
+        LLAMAR siguienteManejador.manejar(transaccion) SI siguienteManejador ≠ NULL
+    FIN METODO
+FIN CLASE
+
+// Clase de la transacción
+CLASE Transaccion
+    VARIABLE tipo, monto, usuario
+    METODO CONSTRUCTOR(tipo, monto, usuario)
+        self.tipo = tipo
+        self.monto = monto
+        self.usuario = usuario
+    FIN METODO
+FIN CLASE
+
+// Usuario con historial de retiros
+CLASE Usuario
+    VARIABLE retirosEstaSemana
+    METODO CONSTRUCTOR()
+        retirosEstaSemana = 0
+    FIN METODO
+FIN CLASE
+
+// Proceso principal
+INICIO
+    usuario = NUEVO Usuario()
+    manejador1 = NUEVO LimiteRetiros()
+    manejador2 = NUEVO AutorizacionRetiros()
+    manejador3 = NUEVO ControlLavadoDinero()
+    
+    manejador1.establecerSiguiente(manejador2)
+    manejador2.establecerSiguiente(manejador3)
+
+    // Ejemplo de transacción
+    transaccion = NUEVO Transaccion("RETIRO", 15X, usuario)
+    manejador1.manejar(transaccion)
+
+    transaccion2 = NUEVO Transaccion("DEPOSITO", 6X, usuario)
+    manejador1.manejar(transaccion2)
+FIN
