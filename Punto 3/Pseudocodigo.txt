@@ -1,0 +1,37 @@
+Clase Abstracta ControlInventario
+    Método Final gestionarInventario()
+        cargarDatos()
+        analizarInventario()
+        aplicarAlgoritmo()
+        mostrarResultados()
+
+    Método Abstracto analizarInventario()
+    Método Abstracto aplicarAlgoritmo()
+    
+    Método cargarDatos()
+        Mostrar "Cargando datos de inventario..."
+
+    Método mostrarResultados()
+        Mostrar "Mostrando resultados del análisis"
+
+Clase Concreta ControlSimple hereda de ControlInventario
+    Método analizarInventario()
+        Mostrar "Analizando inventario de manera simple"
+
+    Método aplicarAlgoritmo()
+        Mostrar "Aplicando algoritmo simple de optimización"
+
+Clase Concreta ControlDeterministico hereda de ControlInventario
+    Método analizarInventario()
+        Mostrar "Analizando inventario con un modelo determinístico"
+
+    Método aplicarAlgoritmo()
+        Mostrar "Aplicando algoritmo determinístico de optimización"
+
+Inicio
+    Variable control <- Nueva instancia de ControlSimple()
+    control.gestionarInventario()
+
+    Variable control2 <- Nueva instancia de ControlDeterministico()
+    control2.gestionarInventario()
+Fin
