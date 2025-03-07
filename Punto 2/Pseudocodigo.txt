@@ -1,0 +1,41 @@
+INICIO
+
+    // Definir interfaz para Tarjetas de Crédito
+    INTERFAZ TarjetaCredito
+        MÉTODO calcularCuotas(monto, meses): número
+
+    // Clases concretas para cada tarjeta
+    CLASE Visa IMPLEMENTA TarjetaCredito
+        MÉTODO calcularCuotas(monto, meses)
+            interes = 0.02
+            RETORNAR (monto * (1 + interes * meses)) / meses
+
+    CLASE MasterCard IMPLEMENTA TarjetaCredito
+        MÉTODO calcularCuotas(monto, meses)
+            interes = 0.025
+            RETORNAR (monto * (1 + interes * meses)) / meses
+
+    // Factory Method para crear tarjetas de crédito
+    CLASE FabricaTarjetaCredito
+        MÉTODO ESTÁTICO crearTarjeta(tipo)
+            SI tipo ES "Visa"
+                RETORNAR NUEVO Visa()
+            SI tipo ES "MasterCard"
+                RETORNAR NUEVO MasterCard()
+            SINO
+                LANZAR ERROR "Tipo de tarjeta no soportado"
+
+    // Función que simula la compra en cuotas
+    FUNCIÓN simularCompra(tipoTarjeta, monto, meses)
+        INTENTAR
+            tarjeta = FabricaTarjetaCredito.crearTarjeta(tipoTarjeta)
+            cuota = tarjeta.calcularCuotas(monto, meses)
+            IMPRIMIR "Tarjeta:", tipoTarjeta, "Cuotas:", meses, "Valor cuota:", cuota
+        CAPTURAR ERROR
+            IMPRIMIR "Error:", ERROR.mensaje
+
+    // Pruebas del sistema
+    simularCompra("Visa", 1000, 12)
+    simularCompra("MasterCard", 2000, 6)
+
+FIN
